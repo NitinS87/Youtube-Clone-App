@@ -8,9 +8,19 @@ const Feed = () => {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then((data) => {
-      setVideos(data.items);
-    });
+    const fetchVideos = async () => {
+      try {
+        await fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then(
+          (data) => {
+            setVideos(data.items);
+          }
+        );
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchVideos();
   }, [selectedCategory]);
   return (
     <Stack sx={{ flexDirection: { sx: "column", md: "row" } }}>

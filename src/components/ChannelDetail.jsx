@@ -14,22 +14,46 @@ const ChannelDetail = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetchFromAPI(`channels?part=snippet&id=${id}`).then((data) =>
-      setChannelDetail(data?.items[0])
-    );
+    const fetchChannelDetails = async () => {
+      try {
+        await fetchFromAPI(`channels?part=snippet&id=${id}`).then((data) =>
+          setChannelDetail(data?.items[0])
+        );
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
 
-    fetchFromAPI(`search?channelId=${id}&part=snippet&order=date`).then(
-      (data) => setVideos(data?.items)
-    );
+    const fetchVideos = async () => {
+      try {
+        await fetchFromAPI(
+          `search?channelId=${id}&part=snippet&order=date`
+        ).then((data) => setVideos(data?.items));
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
 
-    fetchFromAPI(`channels?part=snippet&id=${id}`).then((data) =>
-      setBannerImg(data?.items[0]?.brandingSettings?.image?.bannerExternalUrl)
-    );
+    const fetchBannerImg = async () => {
+      try {
+        await fetchFromAPI(`channels?part=snippet&id=${id}`).then((data) =>
+          setBannerImg(
+            data?.items[0]?.brandingSettings?.image?.bannerExternalUrl
+          )
+        );
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchBannerImg();
+    fetchVideos();
+    fetchChannelDetails();
   }, [id]);
 
   // console.log(videos);
   // console.log(channelDetail);
-  console.log(bannerImg);
+  // console.log(bannerImg);
   return (
     <Box minHeight="95vh">
       <Box>

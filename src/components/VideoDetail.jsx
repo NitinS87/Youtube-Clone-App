@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { Link, useParams } from "react-router-dom";
 import { fetchFromAPI } from "./../utils/fetchFromAPI";
+import Loader from "./Loader";
 import Videos from "./Videos";
 
 const VideoDetail = () => {
@@ -12,16 +13,32 @@ const VideoDetail = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetchFromAPI(`videos?part=snippet,statistics&id=${id}`).then((data) =>
-      setVideoDetail(data.items[0])
-    );
+    const fetchVideoDetails = async () => {
+      try {
+        await fetchFromAPI(`videos?part=snippet,statistics&id=${id}`).then(
+          (data) => setVideoDetail(data.items[0])
+        );
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
 
-    fetchFromAPI(`search?part=snippet&relatedToVideoId=${id}&type=video`).then(
-      (data) => setVideos(data.items)
-    );
+    const fetchVideos = async () => {
+      try {
+        await fetchFromAPI(
+          `search?part=snippet&relatedToVideoId=${id}&type=video`
+        ).then((data) => setVideos(data.items));
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
+    fetchVideoDetails();
+
+    fetchVideos();
   }, [id]);
 
-  if (!videoDetail?.snippet) return "Loading...";
+  if (!videoDetail?.snippet) return <Loader />;
 
   const {
     snippet: { title, channelId, channelTitle },
@@ -68,17 +85,17 @@ const VideoDetail = () => {
                 </Typography>
               </Stack>
             </Stack>
-            </Box>
-            </Box>
-            <Box
-              px={2}
-              py={{ md: 1, xs: 5 }}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Videos videos={videos} direction="column" />
-            </Box>
-          </Stack>
+          </Box>
+        </Box>
+        <Box
+          px={2}
+          py={{ md: 1, xs: 5 }}
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Videos videos={videos} direction="column" />
+        </Box>
+      </Stack>
     </Box>
   );
 };
