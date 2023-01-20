@@ -1,3 +1,5 @@
+# Go to my deployed site (https://splendid-khapse-3500a2.netlify.app/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
